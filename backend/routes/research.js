@@ -1,11 +1,11 @@
 import express from 'express';
-import { pool } from '../db.js';
+import Research from '../models/Research.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM research_projects ORDER BY start_date DESC');
+    const rows = await Research.find().sort({ start_date: -1 });
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -15,11 +15,16 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const { title, lead, start_date, end_date, description, funding } = req.body;
   try {
-    const [result] = await pool.query(
-      'INSERT INTO research_projects (title, lead, start_date, end_date, description, funding) VALUES (?, ?, ?, ?, ?, ?)',
-      [title, lead, start_date, end_date, description || '', funding || 0]
-    );
-    res.json({ id: result.insertId });
+    const record = new Research({
+      title,
+      lead,
+      start_date: start_date || null,
+      end_date: end_date || null,
+      description: description || '',
+      funding: funding || 0
+    });
+    await record.save();
+    res.json({ id: record._id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

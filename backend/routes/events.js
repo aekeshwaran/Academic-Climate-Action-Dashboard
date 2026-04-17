@@ -1,11 +1,11 @@
 import express from 'express';
-import { pool } from '../db.js';
+import Event from '../models/Event.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM green_events ORDER BY date DESC');
+    const rows = await Event.find().sort({ date: -1 });
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -15,11 +15,15 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const { title, date, trees_planted, participants, description } = req.body;
   try {
-    const [result] = await pool.query(
-      'INSERT INTO green_events (title, date, trees_planted, participants, description) VALUES (?, ?, ?, ?, ?)',
-      [title, date, trees_planted || 0, participants || 0, description || '']
-    );
-    res.json({ id: result.insertId });
+    const record = new Event({
+      title,
+      date: date || new Date(),
+      trees_planted: trees_planted || 0,
+      participants: participants || 0,
+      description: description || ''
+    });
+    await record.save();
+    res.json({ id: record._id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

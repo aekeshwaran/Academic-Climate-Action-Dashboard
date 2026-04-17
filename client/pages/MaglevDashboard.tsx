@@ -8,7 +8,7 @@ import {
   Activity, Zap, Shield, AlertTriangle, Play, Pause, RefreshCw, 
   Cpu, Thermometer, Radio, ArrowUpRight, TrendingUp 
 } from 'lucide-react';
-import { MaglevSensorData, MaglevSystemState } from '@shared/api';
+import { MaglevSensorData, MaglevSystemState } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';

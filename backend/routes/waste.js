@@ -1,11 +1,11 @@
 import express from 'express';
-import { pool } from '../db.js';
+import Waste from '../models/Waste.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM waste_management ORDER BY period_date DESC');
+    const rows = await Waste.find().sort({ createdAt: -1 });
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -13,13 +13,11 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { building_id, waste_kg, recycled_kg, period_date } = req.body;
+  const { type, generated_kg, recycled_kg, month, year } = req.body;
   try {
-    const [result] = await pool.query(
-      'INSERT INTO waste_management (building_id, waste_kg, recycled_kg, period_date) VALUES (?, ?, ?, ?)',
-      [building_id || null, waste_kg, recycled_kg, period_date]
-    );
-    res.json({ id: result.insertId });
+    const record = new Waste({ type, generated_kg, recycled_kg, month, year });
+    await record.save();
+    res.json({ id: record._id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

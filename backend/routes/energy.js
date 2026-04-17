@@ -1,11 +1,11 @@
 import express from 'express';
-import { pool } from '../db.js';
+import Energy from '../models/Energy.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM energy_consumption ORDER BY period_date DESC');
+    const rows = await Energy.find().sort({ period_date: -1 });
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -13,13 +13,16 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { building_id, consumption_kwh, period_date } = req.body;
+  const { building_name, consumption_kwh, solar_kwh, period_date } = req.body;
   try {
-    const [result] = await pool.query(
-      'INSERT INTO energy_consumption (building_id, consumption_kwh, period_date) VALUES (?, ?, ?)',
-      [building_id || null, consumption_kwh, period_date]
-    );
-    res.json({ id: result.insertId });
+    const record = new Energy({
+      building_name,
+      electricity_kwh: consumption_kwh,
+      solar_kwh: solar_kwh || 0,
+      period_date: period_date || new Date()
+    });
+    await record.save();
+    res.json({ id: record._id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
