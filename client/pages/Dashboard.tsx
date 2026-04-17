@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -110,8 +111,7 @@ export default function Dashboard() {
 
   const fetchOverallScore = async () => {
     try {
-      const response = await fetch("/api/sustainability/score");
-      const data = await response.json();
+      const { data } = await api.get("/api/sustainability/score");
       setOverallScore(data);
     } catch (err) {
       console.error("Failed to fetch score");
@@ -120,8 +120,7 @@ export default function Dashboard() {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch("/api/analytics");
-      const data = await response.json();
+      const { data } = await api.get("/api/analytics");
       setAnalyticsData(data);
     } catch (err) {
       console.error("Failed to fetch analytics", err);

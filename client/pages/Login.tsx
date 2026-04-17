@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Leaf, Eye, EyeOff, Shield, GraduationCap, Briefcase, FlaskConical } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
 const roles = [
   { icon: Shield, label: "Admin", desc: "Manage & Generate Reports", color: "text-red-500 bg-red-50" },
@@ -29,25 +30,14 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("user", "loggedIn");
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userData", JSON.stringify(data.user));
-        toast.success(`Welcome back, ${data.user?.name || username}!`);
-        navigate("/dashboard");
-      } else {
-        toast.error(data.error || "Invalid credentials. Please try again.");
-      }
-    } catch (err) {
-      toast.error("Unable to connect. Please check your connection.");
+      const { data } = await api.post("/api/auth/login", { email: username, password });
+      localStorage.setItem("user", "loggedIn");
+      localStorage.setItem("auth_token", data.token);
+      localStorage.setItem("userData", JSON.stringify(data.user));
+      toast.success(`Welcome back, ${data.user?.name || username}!`);
+      navigate("/dashboard");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }

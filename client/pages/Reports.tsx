@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -131,9 +132,8 @@ export default function Reports() {
 
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem("user") === "loggedIn");
-    fetch("/api/analytics")
-      .then((r) => r.json())
-      .then((d) => setAnalytics(d))
+    api.get("/api/analytics")
+      .then((r) => setAnalytics(r.data))
       .catch(() => {});
   }, []);
 

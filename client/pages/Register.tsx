@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,19 +23,10 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
+      const { data } = await api.post("/api/auth/register", formData);
+      if (data) {
         toast.success("Account created successfully! Please login.");
         navigate("/login");
-      } else {
-        toast.error(data.error || "Registration failed");
       }
     } catch (err) {
       toast.error("Something went wrong. Please try again.");

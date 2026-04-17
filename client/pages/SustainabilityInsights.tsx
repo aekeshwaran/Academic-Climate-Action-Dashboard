@@ -1,5 +1,6 @@
 import DashboardLayout from "../components/DashboardLayout";
 import { useState, useEffect } from "react";
+import api from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Lightbulb, 
@@ -32,8 +33,7 @@ export default function SustainabilityInsights() {
   const fetchInsights = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/insights");
-      const data = await res.json();
+      const { data } = await api.get("/api/insights");
       setInsights(data);
     } catch (e) {
       console.error(e);

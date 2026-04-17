@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Leaf, ArrowRight, Zap, Droplets, Wind, User, LayoutDashboard, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
 export default function Initiatives() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -12,9 +13,8 @@ export default function Initiatives() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/projects")
-      .then((res) => res.json())
-      .then((data) => setProjects(data))
+    api.get("/api/research")
+      .then((res) => setProjects(res.data))
       .catch((err) => console.error("Error fetching projects:", err));
 
     const loggedIn = localStorage.getItem("user") === "loggedIn";
@@ -33,19 +33,10 @@ export default function Initiatives() {
     }
 
     try {
-      const response = await fetch("/api/join-project", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, userId: user?.id }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(`Successfully joined: ${title}`);
-      } else {
-        toast.error(data.error || "Failed to join project");
-      }
-    } catch (err) {
-      toast.error("Something went wrong. Please try again.");
+      const { data } = await api.post("/api/events", { title, projectId, userId: user?.id });
+      toast.success(`Successfully joined: ${title}`);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || "Failed to join project");
     }
   };
 

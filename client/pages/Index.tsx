@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import api from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import {
   BarChart,
@@ -127,9 +128,8 @@ export default function Index() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/dashboard")
-      .then((res) => res.json())
-      .then((data) => setData(data))
+    api.get("/api/analytics")
+      .then((res) => setData(res.data))
       .catch((err) => console.error("Error fetching dashboard data:", err));
 
     const loggedIn = localStorage.getItem("user") === "loggedIn";

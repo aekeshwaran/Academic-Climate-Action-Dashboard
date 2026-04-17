@@ -9,9 +9,14 @@ export async function initDB() {
     console.error('MONGODB_URI is not set. Please add it to backend/.env');
     process.exit(1);
   }
-  
+
   try {
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(mongoURI, {
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
     console.log('MongoDB connection established successfully');
     console.log('Database "climate_dashboard" ensured on MongoDB');
     console.log('MongoDB Models and Indexes initialized successfully');
