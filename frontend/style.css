@@ -1,0 +1,4 @@
+body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#111;margin:20px}
+.container{max-width:1100px;margin:0 auto}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+canvas{background:#fff;border:1px solid #eee;padding:10px}
