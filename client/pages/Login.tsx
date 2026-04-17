@@ -123,17 +123,17 @@ export default function Login() {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-5">
-              {/* Username */}
+              {/* Email */}
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Username</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
                 <input
                   id="username"
-                  type="text"
+                  type="email"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
-                  placeholder="Enter your username"
+                  placeholder="Enter your email address"
                   required
-                  autoComplete="username"
+                  autoComplete="email"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all placeholder-slate-300 bg-slate-50 focus:bg-white"
                 />
               </div>
